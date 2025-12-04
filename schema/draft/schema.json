@@ -916,7 +916,6 @@
             },
             "required": [
                 "message",
-                "mode",
                 "requestedSchema"
             ],
             "type": "object"
@@ -1526,7 +1525,7 @@
             ],
             "type": "object"
         },
-        "JSONRPCError": {
+        "JSONRPCErrorResponse": {
             "description": "A response to a request that indicates an error occurred.",
             "properties": {
                 "error": {
@@ -1542,7 +1541,6 @@
             },
             "required": [
                 "error",
-                "id",
                 "jsonrpc"
             ],
             "type": "object"
@@ -1556,10 +1554,10 @@
                     "$ref": "#/$defs/JSONRPCNotification"
                 },
                 {
-                    "$ref": "#/$defs/JSONRPCResponse"
+                    "$ref": "#/$defs/JSONRPCResultResponse"
                 },
                 {
-                    "$ref": "#/$defs/JSONRPCError"
+                    "$ref": "#/$defs/JSONRPCErrorResponse"
                 }
             ],
             "description": "Refers to any valid JSON-RPC object that can be decoded off the wire, or encoded to be sent."
@@ -1611,6 +1609,17 @@
             "type": "object"
         },
         "JSONRPCResponse": {
+            "anyOf": [
+                {
+                    "$ref": "#/$defs/JSONRPCResultResponse"
+                },
+                {
+                    "$ref": "#/$defs/JSONRPCErrorResponse"
+                }
+            ],
+            "description": "A response to a request, containing either the result or error."
+        },
+        "JSONRPCResultResponse": {
             "description": "A successful (non-error) response to a request.",
             "properties": {
                 "id": {
@@ -3317,6 +3326,10 @@
                     "description": "ISO 8601 timestamp when the task was created.",
                     "type": "string"
                 },
+                "lastUpdatedAt": {
+                    "description": "ISO 8601 timestamp when the task was last updated.",
+                    "type": "string"
+                },
                 "pollInterval": {
                     "description": "Suggested polling interval in milliseconds.",
                     "type": "integer"
@@ -3340,6 +3353,7 @@
             },
             "required": [
                 "createdAt",
+                "lastUpdatedAt",
                 "status",
                 "taskId",
                 "ttl"
@@ -3735,12 +3749,12 @@
         "ToolExecution": {
             "description": "Execution-related properties for a tool.",
             "properties": {
-                "task": {
-                    "description": "Indicates whether this tool supports task-augmented execution.\nThis allows clients to handle long-running operations through polling\nthe task system.\n\n- \"never\": Tool does not support task-augmented execution (default when absent)\n- \"optional\": Tool may support task-augmented execution\n- \"always\": Tool requires task-augmented execution\n\nDefault: \"never\"",
+                "taskSupport": {
+                    "description": "Indicates whether this tool supports task-augmented execution.\nThis allows clients to handle long-running operations through polling\nthe task system.\n\n- \"forbidden\": Tool does not support task-augmented execution (default when absent)\n- \"optional\": Tool may support task-augmented execution\n- \"required\": Tool requires task-augmented execution\n\nDefault: \"forbidden\"",
                     "enum": [
-                        "always",
-                        "never",
-                        "optional"
+                        "forbidden",
+                        "optional",
+                        "required"
                     ],
                     "type": "string"
                 }
@@ -3890,7 +3904,6 @@
             },
             "required": [
                 "error",
-                "id",
                 "jsonrpc"
             ],
             "type": "object"
