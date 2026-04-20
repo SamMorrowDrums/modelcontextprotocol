@@ -51,17 +51,20 @@ An MCP Catalog document is a JSON object that MUST contain the following members
 
 Each entry in the `entries` array describes a single MCP server and MUST contain:
 
-| Member        | Type   | Required | Description                                                                      |
-| :------------ | :----- | :------- | :------------------------------------------------------------------------------- |
-| `identifier`  | string | Yes      | A URI or URN identifying this server (e.g., `urn:mcp:server:example/weather`)    |
-| `displayName` | string | Yes      | A human-readable name for the server                                             |
-| `mediaType`   | string | Yes      | The media type of the referenced artifact. MUST be `application/mcp-server+json` |
-| `url`         | string | Yes      | URL where the full server card can be retrieved                                  |
+| Member       | Type   | Required | Description                                                                      |
+| :----------- | :----- | :------- | :------------------------------------------------------------------------------- |
+| `identifier` | string | Yes      | A URI or URN identifying this server (e.g., `urn:mcp:server:example/weather`)    |
+| `mediaType`  | string | Yes      | The media type of the referenced artifact. MUST be `application/mcp-server+json` |
+| `url`        | string | Yes      | URL where the full server card can be retrieved                                  |
 
-The following members are OPTIONAL:
+The following members are OPTIONAL. Because the server card itself is the source of truth
+for metadata like name and description, catalogs MAY omit these fields and let clients
+retrieve them from the server card. Including them can improve listing UX by avoiding
+extra round-trips.
 
 | Member        | Type     | Required | Description                                                        |
 | :------------ | :------- | :------- | :----------------------------------------------------------------- |
+| `displayName` | string   | No       | A human-readable name for the server                               |
 | `description` | string   | No       | A short description of the server's capabilities                   |
 | `tags`        | string[] | No       | Keywords for filtering and discovery (e.g., `["search", "api"]`)   |
 | `version`     | string   | No       | The version of the server. Semantic versioning is RECOMMENDED      |
@@ -69,7 +72,7 @@ The following members are OPTIONAL:
 
 ### Example: Single Server
 
-A domain hosting a single MCP server:
+A domain hosting a single MCP server, using only the required fields:
 
 ```json
 {
@@ -77,12 +80,8 @@ A domain hosting a single MCP server:
   "entries": [
     {
       "identifier": "urn:mcp:server:example.com/weather",
-      "displayName": "Weather Service",
       "mediaType": "application/mcp-server+json",
-      "url": "https://example.com/.well-known/mcp-server-card",
-      "description": "Provides weather forecasts and current conditions.",
-      "tags": ["weather", "forecast"],
-      "version": "1.2.0"
+      "url": "https://example.com/.well-known/mcp-server-card"
     }
   ]
 }
