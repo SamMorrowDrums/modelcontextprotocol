@@ -300,6 +300,7 @@
                 "group": "Base Protocol",
                 "pages": [
                   "specification/draft/basic/index",
+                  "specification/draft/basic/discovery",
                   "specification/draft/basic/lifecycle",
                   "specification/draft/basic/transports",
                   "specification/draft/basic/authorization",
